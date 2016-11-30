@@ -10,6 +10,8 @@
 		C7C5433D1DEE6C6C00325B57 /* SPKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C543331DEE6C6B00325B57 /* SPKit.framework */; };
 		C7C543421DEE6C6C00325B57 /* SPKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C543411DEE6C6C00325B57 /* SPKitTests.swift */; };
 		C7C543441DEE6C6C00325B57 /* SPKit.h in Headers */ = {isa = PBXBuildFile; fileRef = C7C543361DEE6C6B00325B57 /* SPKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C7C5434E1DEE6E6300325B57 /* SPKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C5434D1DEE6E6300325B57 /* SPKit.swift */; };
+		C7C5434F1DEE6E6300325B57 /* SPKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C5434D1DEE6E6300325B57 /* SPKit.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +31,7 @@
 		C7C5433C1DEE6C6C00325B57 /* SPKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SPKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7C543411DEE6C6C00325B57 /* SPKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPKitTests.swift; sourceTree = "<group>"; };
 		C7C543431DEE6C6C00325B57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C7C5434D1DEE6E6300325B57 /* SPKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SPKit.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +76,7 @@
 			children = (
 				C7C543361DEE6C6B00325B57 /* SPKit.h */,
 				C7C543371DEE6C6B00325B57 /* Info.plist */,
+				C7C5434D1DEE6E6300325B57 /* SPKit.swift */,
 			);
 			path = SPKit;
 			sourceTree = "<group>";
@@ -149,6 +153,7 @@
 					C7C543321DEE6C6B00325B57 = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = T8K53X4GA6;
+						LastSwiftMigration = 0810;
 						ProvisioningStyle = Automatic;
 					};
 					C7C5433B1DEE6C6C00325B57 = {
@@ -198,6 +203,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7C5434E1DEE6E6300325B57 /* SPKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,6 +212,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7C543421DEE6C6C00325B57 /* SPKitTests.swift in Sources */,
+				C7C5434F1DEE6E6300325B57 /* SPKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,6 +329,7 @@
 		C7C543481DEE6C6C00325B57 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = T8K53X4GA6;
@@ -334,6 +342,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.blastersystems.SPKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -341,6 +350,7 @@
 		C7C543491DEE6C6C00325B57 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = T8K53X4GA6;
@@ -360,6 +370,7 @@
 		C7C5434B1DEE6C6C00325B57 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = T8K53X4GA6;
 				INFOPLIST_FILE = SPKitTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -372,6 +383,7 @@
 		C7C5434C1DEE6C6C00325B57 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = T8K53X4GA6;
 				INFOPLIST_FILE = SPKitTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

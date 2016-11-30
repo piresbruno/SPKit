@@ -11,25 +11,121 @@ import XCTest
 
 class SPKitTests: XCTestCase {
     
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testSync() {
+        
+        SPKit.first { (deferred) in
+            print("init")
+            deferred.resolve()
+            
+        }.then { (deferred) in
+            print("stage 1")
+            deferred.resolve()
+        }.then { (deferred) in
+            print("stage 2")
+            deferred.resolve()
+        }.then { (deferred) in
+            print("stage 3")
+            deferred.finish()
+        }.completed {
+            print("COMPLETED")
+        }
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
+    func testAsync() {
+        
+        let expect = expectation(description: "test async")
+        
+        SPKit.first { (deferred) in
+            
+            print("init")
+            deferred.resolve()
+            
+        }.then { (deferred) in
+            
+            DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
+                print("stage 1")
+                deferred.resolve()
+            }
+        }.then { (deferred) in
+            
+            DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
+                print("stage 2")
+                deferred.resolve()
+            }
+        }.then { (deferred) in
+            
+            DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
+                print("stage 3")
+                deferred.finish()
+            }
+        }.completed {
+            
+            print("COMPLETED")
+            XCTAssert(true)
+            expect.fulfill()
+        }
+        
+        self.waitForExpectations(timeout: 5) { (error) -> Void in
+            XCTAssertNil(error, "Something went horribly wrong")
+        }
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    
+    func testSyncError() {
+        
+        SPKit.first { (deferred) in
+            print("init")
+            deferred.resolve()
+            
+            }.then { (deferred) in
+                print("stage 1")
+                deferred.resolve()
+            }.then { (deferred) in
+                print("stage 2")
+                deferred.resolve()
+            }.then { (deferred) in
+                print("stage 3")
+                deferred.failure()
+            }.failure {
+                print("FAILURE")
+        }
     }
     
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testAsyncError() {
+        
+        let expect = expectation(description: "test async error")
+        
+        SPKit.first { (deferred) in
+            
+            print("init")
+            deferred.resolve()
+            
+            }.then { (deferred) in
+                
+                DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
+                    print("stage 1")
+                    deferred.resolve()
+                }
+            }.then { (deferred) in
+                
+                DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
+                    print("stage 2")
+                    deferred.resolve()
+                }
+            }.then { (deferred) in
+                
+                DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
+                    print("stage 3")
+                    deferred.failure()
+                }
+            }.failure {
+                print("FAILURE")
+                XCTAssert(true)
+                expect.fulfill()
+        }
+        
+        self.waitForExpectations(timeout: 5) { (error) -> Void in
+            XCTAssertNil(error, "Something went horribly wrong")
         }
     }
     
