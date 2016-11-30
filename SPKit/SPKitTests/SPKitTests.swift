@@ -74,7 +74,7 @@ class SPKitTests: XCTestCase {
             expect.fulfill()
         }
         
-        self.waitForExpectations(timeout: 5) { (error) -> Void in
+        self.waitForExpectations(timeout: 10) { (error) -> Void in
             XCTAssertNil(error, "Something went horribly wrong")
         }
     }
@@ -142,6 +142,75 @@ class SPKitTests: XCTestCase {
         }
         
         self.waitForExpectations(timeout: 5) { (error) -> Void in
+            XCTAssertNil(error, "Something went horribly wrong")
+        }
+    }
+    
+    func testSendingResultFailure() {
+        
+        let expect = expectation(description: "test sync send error result")
+        
+        SPKit.first { (instance, result) in
+            print("init")
+            instance.resolve()
+            
+            }.then { (instance, result) in
+                print("stage 1")
+                instance.resolve()
+            }.then { (instance, result) in
+                print("stage 2")
+                instance.resolve()
+            }.then { (instance, result) in
+                print("stage 3")
+                instance.failure("an error occurred")
+                
+            }.failure {(instance, result) in
+                print("FAILURE")
+                
+                XCTAssertNotNil(result)
+                expect.fulfill()
+        }
+        
+        self.waitForExpectations(timeout: 5) { (error) -> Void in
+            XCTAssertNil(error, "Something went horribly wrong")
+        }
+    }
+    
+    func testSendingResultCompletion () {
+        
+        let expect = expectation(description: "test sync completion send result")
+        
+        SPKit.first { (instance, result) in
+            
+            print("init")
+            instance.resolve()
+            
+            }.then { (instance, result) in
+                
+                DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
+                    print("stage 1")
+                    instance.resolve()
+                }
+            }.then { (instance, result) in
+                
+                DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
+                    print("stage 2")
+                    instance.resolve()
+                }
+            }.then { (instance, result) in
+                
+                DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
+                    print("stage 3")
+                    instance.finish("completed")
+                }
+            }.completed {(instance, result) in
+                
+                print("COMPLETED")
+                XCTAssertNotNil(result)
+                expect.fulfill()
+        }
+        
+        self.waitForExpectations(timeout: 10) { (error) -> Void in
             XCTAssertNil(error, "Something went horribly wrong")
         }
     }

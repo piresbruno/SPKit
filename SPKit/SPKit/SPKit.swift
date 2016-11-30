@@ -39,7 +39,7 @@ public class SPKit{
     
     func resolve(_ result:Any? = nil) {
         
-        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(5)){
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)){
             
             if let item = self.stack.first{
                 item(self, result)
