@@ -8,23 +8,22 @@
 
 import Foundation
 
-public typealias callbackWithParameter = ((_ deferred:SPKit)->())
-public typealias callback = (()->())
+public typealias callback = (SPKit, Any?)->()
 
 public class SPKit{
     
     private var error:callback?
     private var success:callback?
-    private var stack:[callbackWithParameter] = []
+    private var stack:[callback] = []
     
-    static func first(_ callback:@escaping callbackWithParameter) -> SPKit{
+    static func first(_ callback:@escaping callback) -> SPKit{
         
         let instance = SPKit()
-        callback(instance)
+        callback(instance, nil)
         return instance
     }
     
-    func then(_ callback:@escaping callbackWithParameter) -> SPKit{
+    func then(_ callback:@escaping callback) -> SPKit{
         
         self.stack.append(callback)
         return self
@@ -38,26 +37,25 @@ public class SPKit{
         self.error = callback
     }
     
-    func resolve() {
+    func resolve(_ result:Any? = nil) {
         
         DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(5)){
             
-            if let result = self.stack.first{
-                result(self)
+            if let item = self.stack.first{
+                item(self, result)
                 _ = self.stack.remove(at: 0)
             }
         }
     }
     
-    func finish() {
-        success?()
+    func finish(_ result:Any? = nil) {
+        success?(self, result)
     }
     
-    func failure() {
-        error?()
+    func failure(_ result:Any? = nil) {
+        error?(self, result)
     }
 }
-
 
 
 

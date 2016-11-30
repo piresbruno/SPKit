@@ -412,6 +412,7 @@
 				C7C543491DEE6C6C00325B57 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C7C5434A1DEE6C6C00325B57 /* Build configuration list for PBXNativeTarget "SPKitTests" */ = {
 			isa = XCConfigurationList;
@@ -420,6 +421,7 @@
 				C7C5434C1DEE6C6C00325B57 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

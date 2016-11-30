@@ -15,20 +15,20 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test sync")
         
-        SPKit.first { (deferred) in
+        SPKit.first { (instance, result) in
             print("init")
-            deferred.resolve()
+            instance.resolve()
             
-        }.then { (deferred) in
+        }.then { (instance, result) in
             print("stage 1")
-            deferred.resolve()
-        }.then { (deferred) in
+            instance.resolve()
+        }.then { (instance, result) in
             print("stage 2")
-            deferred.resolve()
-        }.then { (deferred) in
+            instance.resolve()
+        }.then { (instance, result) in
             print("stage 3")
-            deferred.finish()
-        }.completed {
+            instance.finish()
+        }.completed {_,_ in
             print("COMPLETED")
             
             XCTAssert(true)
@@ -44,30 +44,30 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test async")
         
-        SPKit.first { (deferred) in
+        SPKit.first { (instance, result) in
             
             print("init")
-            deferred.resolve()
+            instance.resolve()
             
-        }.then { (deferred) in
+        }.then { (instance, result) in
             
             DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                 print("stage 1")
-                deferred.resolve()
+                instance.resolve()
             }
-        }.then { (deferred) in
+        }.then { (instance, result) in
             
             DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                 print("stage 2")
-                deferred.resolve()
+                instance.resolve()
             }
-        }.then { (deferred) in
+        }.then { (instance, result) in
             
             DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                 print("stage 3")
-                deferred.finish()
+                instance.finish()
             }
-        }.completed {
+        }.completed {(instance, result) in
             
             print("COMPLETED")
             XCTAssert(true)
@@ -84,20 +84,20 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test sync error")
         
-        SPKit.first { (deferred) in
+        SPKit.first { (instance, result) in
             print("init")
-            deferred.resolve()
+            instance.resolve()
             
-            }.then { (deferred) in
+            }.then { (instance, result) in
                 print("stage 1")
-                deferred.resolve()
-            }.then { (deferred) in
+                instance.resolve()
+            }.then { (instance, result) in
                 print("stage 2")
-                deferred.resolve()
-            }.then { (deferred) in
+                instance.resolve()
+            }.then { (instance, result) in
                 print("stage 3")
-                deferred.failure()
-            }.failure {
+                instance.failure()
+            }.failure {(instance, result) in
                 print("FAILURE")
                 XCTAssert(true)
                 expect.fulfill()
@@ -112,30 +112,30 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test async error")
         
-        SPKit.first { (deferred) in
+        SPKit.first { (instance, result) in
             
             print("init")
-            deferred.resolve()
+            instance.resolve()
             
-            }.then { (deferred) in
+            }.then { (instance, result) in
                 
                 DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                     print("stage 1")
-                    deferred.resolve()
+                    instance.resolve()
                 }
-            }.then { (deferred) in
+            }.then { (instance, result) in
                 
                 DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                     print("stage 2")
-                    deferred.resolve()
+                    instance.resolve()
                 }
-            }.then { (deferred) in
+            }.then { (instance, result) in
                 
                 DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                     print("stage 3")
-                    deferred.failure()
+                    instance.failure()
                 }
-            }.failure {
+            }.failure { (instance, result) in
                 print("FAILURE")
                 XCTAssert(true)
                 expect.fulfill()
