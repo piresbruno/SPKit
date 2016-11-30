@@ -40,7 +40,7 @@ public class SPKit{
     
     func resolve() {
         
-        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)){
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(5)){
             
             if let result = self.stack.first{
                 result(self)
@@ -57,3 +57,20 @@ public class SPKit{
         error?()
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

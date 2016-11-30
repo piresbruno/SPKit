@@ -13,6 +13,8 @@ class SPKitTests: XCTestCase {
     
     func testSync() {
         
+        let expect = expectation(description: "test sync")
+        
         SPKit.first { (deferred) in
             print("init")
             deferred.resolve()
@@ -28,6 +30,13 @@ class SPKitTests: XCTestCase {
             deferred.finish()
         }.completed {
             print("COMPLETED")
+            
+            XCTAssert(true)
+            expect.fulfill()
+        }
+        
+        self.waitForExpectations(timeout: 5) { (error) -> Void in
+            XCTAssertNil(error, "Something went horribly wrong")
         }
     }
     
@@ -73,6 +82,8 @@ class SPKitTests: XCTestCase {
     
     func testSyncError() {
         
+        let expect = expectation(description: "test sync error")
+        
         SPKit.first { (deferred) in
             print("init")
             deferred.resolve()
@@ -88,6 +99,12 @@ class SPKitTests: XCTestCase {
                 deferred.failure()
             }.failure {
                 print("FAILURE")
+                XCTAssert(true)
+                expect.fulfill()
+        }
+        
+        self.waitForExpectations(timeout: 5) { (error) -> Void in
+            XCTAssertNil(error, "Something went horribly wrong")
         }
     }
     
