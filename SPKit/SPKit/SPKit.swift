@@ -8,32 +8,35 @@
 
 import Foundation
 
-public typealias callback = (SPKit, Any?)->()
+public typealias callback_init = (SPKit)->()
+public typealias callback_regular = (Any?)->()
+public typealias callback_complete = (SPKit, Any?)->()
 
 public class SPKit{
     
-    private var error:callback?
-    private var success:callback?
-    private var stack:[callback] = []
+    private var error:callback_regular?
+    private var success:callback_regular?
+    private var stack:[(SPKit, Any?)->()] = []
     
-    static func first(_ callback:@escaping callback) -> SPKit{
+    static func first(_ callback:@escaping callback_init) -> SPKit{
         
         let instance = SPKit()
-        callback(instance, nil)
+        callback(instance)
         return instance
     }
     
-    func then(_ callback:@escaping callback) -> SPKit{
+    func then(_ callback:@escaping callback_complete) -> SPKit{
         
         self.stack.append(callback)
         return self
     }
     
-    func completed(_ callback:@escaping callback){
+    func onCompleted(_ callback:@escaping callback_regular) -> SPKit{
         self.success = callback
+        return self
     }
     
-    func failure(_ callback:@escaping callback){
+    func onFailure(_ callback:@escaping callback_regular){
         self.error = callback
     }
     
@@ -48,15 +51,14 @@ public class SPKit{
         }
     }
     
-    func finish(_ result:Any? = nil) {
-        success?(self, result)
+    func complete(_ result:Any? = nil) {
+        self.success?(result)
     }
     
     func failure(_ result:Any? = nil) {
-        error?(self, result)
+        self.error?(result)
     }
 }
-
 
 
 

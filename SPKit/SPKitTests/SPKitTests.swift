@@ -15,7 +15,7 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test sync")
         
-        SPKit.first { (instance, result) in
+        _ = SPKit.first { (instance) in
             print("init")
             instance.resolve()
             
@@ -27,8 +27,8 @@ class SPKitTests: XCTestCase {
             instance.resolve()
         }.then { (instance, result) in
             print("stage 3")
-            instance.finish()
-        }.completed {_,_ in
+            instance.complete()
+        }.onCompleted { (result) in
             print("COMPLETED")
             
             XCTAssert(true)
@@ -44,7 +44,7 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test async")
         
-        SPKit.first { (instance, result) in
+        _ = SPKit.first { (instance) in
             
             print("init")
             instance.resolve()
@@ -65,16 +65,16 @@ class SPKitTests: XCTestCase {
             
             DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                 print("stage 3")
-                instance.finish()
+                instance.complete()
             }
-        }.completed {(instance, result) in
+        }.onCompleted {(result) in
             
             print("COMPLETED")
             XCTAssert(true)
             expect.fulfill()
         }
         
-        self.waitForExpectations(timeout: 10) { (error) -> Void in
+        self.waitForExpectations(timeout: 20) { (error) -> Void in
             XCTAssertNil(error, "Something went horribly wrong")
         }
     }
@@ -84,7 +84,7 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test sync error")
         
-        SPKit.first { (instance, result) in
+        _ = SPKit.first { (instance) in
             print("init")
             instance.resolve()
             
@@ -97,7 +97,7 @@ class SPKitTests: XCTestCase {
             }.then { (instance, result) in
                 print("stage 3")
                 instance.failure()
-            }.failure {(instance, result) in
+            }.onFailure {(error) in
                 print("FAILURE")
                 XCTAssert(true)
                 expect.fulfill()
@@ -112,7 +112,7 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test async error")
         
-        SPKit.first { (instance, result) in
+        SPKit.first { (instance) in
             
             print("init")
             instance.resolve()
@@ -135,7 +135,7 @@ class SPKitTests: XCTestCase {
                     print("stage 3")
                     instance.failure()
                 }
-            }.failure { (instance, result) in
+            }.onFailure { (error) in
                 print("FAILURE")
                 XCTAssert(true)
                 expect.fulfill()
@@ -150,7 +150,7 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test sync send error result")
         
-        SPKit.first { (instance, result) in
+        SPKit.first { (instance) in
             print("init")
             instance.resolve()
             
@@ -164,10 +164,10 @@ class SPKitTests: XCTestCase {
                 print("stage 3")
                 instance.failure("an error occurred")
                 
-            }.failure {(instance, result) in
+            }.onFailure {(error) in
                 print("FAILURE")
                 
-                XCTAssertNotNil(result)
+                XCTAssertNotNil(error)
                 expect.fulfill()
         }
         
@@ -180,7 +180,7 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test sync completion send result")
         
-        SPKit.first { (instance, result) in
+        _ = SPKit.first { (instance) in
             
             print("init")
             instance.resolve()
@@ -201,9 +201,9 @@ class SPKitTests: XCTestCase {
                 
                 DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                     print("stage 3")
-                    instance.finish("completed")
+                    instance.complete("completed")
                 }
-            }.completed {(instance, result) in
+            }.onCompleted {(result) in
                 
                 print("COMPLETED")
                 XCTAssertNotNil(result)
