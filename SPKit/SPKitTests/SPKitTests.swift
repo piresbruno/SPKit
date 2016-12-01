@@ -15,20 +15,20 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test sync")
         
-        SPKit.first { (deferred) in
+        _ = SPKit.first { (instance) in
             print("init")
-            deferred.resolve()
+            instance.resolve()
             
-        }.then { (deferred) in
+        }.then { (instance, result) in
             print("stage 1")
-            deferred.resolve()
-        }.then { (deferred) in
+            instance.resolve()
+        }.then { (instance, result) in
             print("stage 2")
-            deferred.resolve()
-        }.then { (deferred) in
+            instance.resolve()
+        }.then { (instance, result) in
             print("stage 3")
-            deferred.finish()
-        }.completed {
+            instance.complete()
+        }.onCompleted { (result) in
             print("COMPLETED")
             
             XCTAssert(true)
@@ -44,37 +44,37 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test async")
         
-        SPKit.first { (deferred) in
+        _ = SPKit.first { (instance) in
             
             print("init")
-            deferred.resolve()
+            instance.resolve()
             
-        }.then { (deferred) in
+        }.then { (instance, result) in
             
             DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                 print("stage 1")
-                deferred.resolve()
+                instance.resolve()
             }
-        }.then { (deferred) in
+        }.then { (instance, result) in
             
             DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                 print("stage 2")
-                deferred.resolve()
+                instance.resolve()
             }
-        }.then { (deferred) in
+        }.then { (instance, result) in
             
             DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                 print("stage 3")
-                deferred.finish()
+                instance.complete()
             }
-        }.completed {
+        }.onCompleted {(result) in
             
             print("COMPLETED")
             XCTAssert(true)
             expect.fulfill()
         }
         
-        self.waitForExpectations(timeout: 5) { (error) -> Void in
+        self.waitForExpectations(timeout: 20) { (error) -> Void in
             XCTAssertNil(error, "Something went horribly wrong")
         }
     }
@@ -84,20 +84,20 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test sync error")
         
-        SPKit.first { (deferred) in
+        _ = SPKit.first { (instance) in
             print("init")
-            deferred.resolve()
+            instance.resolve()
             
-            }.then { (deferred) in
+            }.then { (instance, result) in
                 print("stage 1")
-                deferred.resolve()
-            }.then { (deferred) in
+                instance.resolve()
+            }.then { (instance, result) in
                 print("stage 2")
-                deferred.resolve()
-            }.then { (deferred) in
+                instance.resolve()
+            }.then { (instance, result) in
                 print("stage 3")
-                deferred.failure()
-            }.failure {
+                instance.failure()
+            }.onFailure {(error) in
                 print("FAILURE")
                 XCTAssert(true)
                 expect.fulfill()
@@ -112,36 +112,105 @@ class SPKitTests: XCTestCase {
         
         let expect = expectation(description: "test async error")
         
-        SPKit.first { (deferred) in
+        SPKit.first { (instance) in
             
             print("init")
-            deferred.resolve()
+            instance.resolve()
             
-            }.then { (deferred) in
+            }.then { (instance, result) in
                 
                 DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                     print("stage 1")
-                    deferred.resolve()
+                    instance.resolve()
                 }
-            }.then { (deferred) in
+            }.then { (instance, result) in
                 
                 DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                     print("stage 2")
-                    deferred.resolve()
+                    instance.resolve()
                 }
-            }.then { (deferred) in
+            }.then { (instance, result) in
                 
                 DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
                     print("stage 3")
-                    deferred.failure()
+                    instance.failure()
                 }
-            }.failure {
+            }.onFailure { (error) in
                 print("FAILURE")
                 XCTAssert(true)
                 expect.fulfill()
         }
         
         self.waitForExpectations(timeout: 5) { (error) -> Void in
+            XCTAssertNil(error, "Something went horribly wrong")
+        }
+    }
+    
+    func testSendingResultFailure() {
+        
+        let expect = expectation(description: "test sync send error result")
+        
+        SPKit.first { (instance) in
+            print("init")
+            instance.resolve()
+            
+            }.then { (instance, result) in
+                print("stage 1")
+                instance.resolve()
+            }.then { (instance, result) in
+                print("stage 2")
+                instance.resolve()
+            }.then { (instance, result) in
+                print("stage 3")
+                instance.failure("an error occurred")
+                
+            }.onFailure {(error) in
+                print("FAILURE")
+                
+                XCTAssertNotNil(error)
+                expect.fulfill()
+        }
+        
+        self.waitForExpectations(timeout: 5) { (error) -> Void in
+            XCTAssertNil(error, "Something went horribly wrong")
+        }
+    }
+    
+    func testSendingResultCompletion () {
+        
+        let expect = expectation(description: "test sync completion send result")
+        
+        _ = SPKit.first { (instance) in
+            
+            print("init")
+            instance.resolve()
+            
+            }.then { (instance, result) in
+                
+                DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
+                    print("stage 1")
+                    instance.resolve()
+                }
+            }.then { (instance, result) in
+                
+                DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
+                    print("stage 2")
+                    instance.resolve()
+                }
+            }.then { (instance, result) in
+                
+                DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
+                    print("stage 3")
+                    instance.complete("completed")
+                }
+            }.onCompleted {(result) in
+                
+                print("COMPLETED")
+                XCTAssertNotNil(result)
+                expect.fulfill()
+        }
+        
+        self.waitForExpectations(timeout: 10) { (error) -> Void in
             XCTAssertNil(error, "Something went horribly wrong")
         }
     }
