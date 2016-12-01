@@ -8,7 +8,7 @@ You can install SPKit using carthage, or just drag the SPKit.swift file to your 
 
 ### How to use SPKit  
 
-Just start by calling `SPKit.first`, move to the next block by calling `.resolve()` and finish the flow by calling `completed()` or `failure()`.
+Start the flow by calling `SPKit.first`, move to the next block by calling `.resolve()` and finish the flow by calling `.complete()` or `.failure()`.
 
 #### Example happy path
 ```swift
@@ -25,7 +25,7 @@ SPKit.first { (instance) in
     instance.resolve("finished stage 2")
 }.then { (instance, result) in  
 	print("using result value: \(result as? String ?? "")")
-    instance.completed()
+    instance.complete()
 }.onCompleted {(result) in
     print("COMPLETED")
 }.onFailure {(error) in
