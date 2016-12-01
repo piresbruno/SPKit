@@ -13,6 +13,21 @@ Start the flow by calling `SPKit.first`, move to the next block by calling `.res
 #### Example happy path
 ```swift
 SPKit.first { (instance) in
+	print("first code block")
+	instance.resolve()
+}.then { (instance, result) in  
+	print("next code block")
+    instance.complete()
+}.onCompleted {(result) in
+    print("COMPLETED")
+}.onFailure {(error) in
+    print("FAILURE")
+}
+```
+
+#### Example happy path with sync and async
+```swift
+SPKit.first { (instance) in
 	print("first code exec")
 	instance.resolve()
 }.then { (instance, result) in
@@ -38,11 +53,6 @@ SPKit.first { (instance) in
 SPKit.first { (instance) in
 	print("first code exec")
 	instance.resolve()
-}.then { (instance, result) in
-    DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)){
-        print("async code")
-        instance.resolve()
-    }
 }.then { (instance, result) in
     print("sync code")
     instance.resolve("finished stage 2")
