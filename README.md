@@ -1,7 +1,7 @@
 
 SPKit is just another Swift promises framework, it prevents the **_callback hell_** and supports sync and async code.  
 It was made be to simple to use, read and maintain.  
-It works with Xcode 8 and Swift 3  
+It works with Xcode 10.2 and Swift 5  
 
 ### How to install SPKit  
 You can install SPKit using carthage, or just drag the SPKit.swift file to your project.  
